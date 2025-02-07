@@ -28,19 +28,23 @@ class ReportController extends Controller
             'offer_number' => 'required|string',
             'project' => 'required|string',
             'item' => 'required|string',
+            'committees_members' => 'required|string',
+            'committees_chairman' => 'required|string',
             'bidders.*.name' => 'required|string',
             'bidders.*.currency' => 'required|string',
             'bidders.*.amount' => 'required|numeric',
             'bidders.*.discount' => 'nullable|numeric',
         ]);
-
+    
         // Create the report
         $report = Report::create([
             'offer_number' => $validated['offer_number'],
             'project' => $validated['project'],
             'item' => $validated['item'],
+            'committees_members' => $validated['committees_members'],
+            'committees_chairman' => $validated['committees_chairman'],
         ]);
-
+    
         // Create bidders
         foreach ($request->bidders as $bidderData) {
             $report->bidders()->create([
@@ -54,15 +58,11 @@ class ReportController extends Controller
                 'zakat_card' => isset($bidderData['zakat_card']),
                 'shop_license' => isset($bidderData['shop_license']),
                 'notes' => $bidderData['notes'] ?? '',
-                'committees_members' => $bidderData['committees_members'] ?? '',
-                'committees_chairman' => $bidderData['committees_chairman'] ?? '',
             ]);
         }
     
-            // Redirect to contracts page with success message
-        return redirect()->route('reports.show', $report);
+        return redirect()->route('reports.index');
     }
-
     // public function show(Contract $contract)
     // {
     //     return view('contracts/show', compact('contract'));

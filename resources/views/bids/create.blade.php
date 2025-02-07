@@ -64,6 +64,15 @@
                                     <label>ملاحظات:</label>
                                     <textarea name="bidders[0][notes]"></textarea>
                                 </div>
+                                <!-- Inside the form -->
+                                <div>
+                                    <label>رئيس اللجنة:</label>
+                                    <input type="text" name="committees_chairman" required>
+                                </div>
+                                <div>
+                                    <label>أعضاء اللجنة:</label>
+                                    <input type="text" name="committees_members" required>
+                                </div>
                             </div>
                         </div>
 
