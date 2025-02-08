@@ -1,7 +1,7 @@
 <x-layout>
 
-<h1>Welcome!</h1>
+<h1>مرحبا!</h1>
 
-<a href="{{ route('contracts.index') }}" class="btn btn-primary">Contracts</a>
+<a href="{{ route('reports.index') }}" class="btn btn-primary">قائمة التقارير</a>
 
 </x-layout>

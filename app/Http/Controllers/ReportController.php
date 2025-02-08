@@ -63,41 +63,46 @@ class ReportController extends Controller
     
         return redirect()->route('reports.index');
     }
-    // public function show(Contract $contract)
-    // {
-    //     return view('contracts/show', compact('contract'));
-    // }
+
+    public function show(Report $report)
+    {
+        return view('reports/show', compact('report'));
+    }
 
     public function generate(Request $request)
     {
-        $selectedReports = Report::whereIn('id', $request->report_ids)
-                                 ->with('bidders')
-                                 ->get();
+        // Log the request data
+        Log::info('Generate PDF Request:', $request->all());
+
+        $selectedReports = Report::whereIn('id', $request->report_ids)->with('bidders')->get();
+
+        // Check if reports are fetched
+        if ($selectedReports->isEmpty()) {
+            return redirect()->back()->with('error', 'No reports selected.');
+        }
     
-        $pdf = PDF::loadView('pdf/pdf_layout', compact('selectedReports'))
-                ->setOption('defaultFont', 'IBMPlexSansArabic') // Use your Arabic font
-                ->setOption('isRemoteEnabled', true) // Enable external assets (e.g., images)
-                ->setOption('isHtml5ParserEnabled', true)
-                ->setOption('direction', 'rtl'); // Set RTL direction
-
-        return $pdf->stream('report.pdf');
+        $pdf = PDF::loadView('pdf.pdf_layout', compact('selectedReports'))
+                  ->setOption('defaultFont', 'IBMPlexSansArabic')
+                  ->setOption('isRemoteEnabled', true)
+                  ->setOption('isHtml5ParserEnabled', true)
+                  ->setOption('direction', 'rtl');
+    
+        return $pdf->stream('reports.pdf');
     }
-
+    
     public function download(Request $request)
     {
-        $selectedReports = Report::whereIn('id', $request->report_ids)
-                                 ->with('bidders')
-                                 ->get();
+        $selectedReports = Report::whereIn('id', $request->report_ids)->with('bidders')->get();
     
-        $pdf = PDF::loadView('pdf/pdf_layout', compact('selectedReports'))
-                ->setOption('defaultFont', 'IBMPlexSansArabic') // Use your Arabic font
-                ->setOption('isRemoteEnabled', true) // Enable external assets (e.g., images)
-                ->setOption('isHtml5ParserEnabled', true)
-                ->setOption('direction', 'rtl'); // Set RTL direction
-
-        return $pdf->download('report.pdf');
+        $pdf = PDF::loadView('pdf.pdf_layout', compact('selectedReports'))
+                  ->setOption('defaultFont', 'IBMPlexSansArabic')
+                  ->setOption('isRemoteEnabled', true)
+                  ->setOption('isHtml5ParserEnabled', true)
+                  ->setOption('direction', 'rtl');
+    
+        return $pdf->download('reports.pdf');
     }
-
+    
     public function destroy($id)
     {
         try {
