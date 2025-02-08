@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{{ $selectedReports->name }}</title>
+        <title>{{ $selectedReports[0]['name'] ?? 'Default Title' }}</title>
 
         <style>
             /* General Styles */
@@ -70,9 +70,9 @@
 
             <div style="text-align: center;">
                 <h1>محضر فتح مظاريف عرض السعر رقم: 
-                <span>{{ $report->offer_number }}</span>
+                <span>{{ $selectedReports[0]['offer_number'] ?? 'N/A' }}</span>
                 </h1>
-                <p>الخاص بشراء وتوريد <span>{{ $report->item }}</span> ضمن مشروع <span>{{ $report->project }}</span></p>
+                <p>الخاص بشراء وتوريد <span>{{ $selectedReports[0]['item'] ?? 'N/A' }}</span> ضمن مشروع <span>{{ $selectedReports[0]['project'] ?? 'N/A' }}</span></p>
             </div>
 
             <table>
@@ -98,7 +98,7 @@
                 <tr>
                     <td>1</td>
                     <td></td>
-                    <td>ريال سعودي</td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -163,7 +163,7 @@
                 <tr>
                     <td>6</td>
                     <td></td>
-                    <td>ريال سعودي</td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -176,7 +176,7 @@
                 <tr>
                     <td>7</td>
                     <td></td>
-                    <td>ريال سعودي</td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -190,9 +190,9 @@
             </table>
 
             <div class="committee">
-                <p>عضو اللجنة: <span>{{ $report->bidders->first()->committees_members }}</span></p>
-                <p>عضو اللجنة: <span>{{ $report->bidders->first()->committees_members }}</span></p>
-                <p>رئيس اللجنة: <span>{{ $report->bidders->first()->committees_chairman }}</span></p>
+                <p>عضو اللجنة: <span>{{ $selectedReports[0]['committees_members'] ?? 'N/A' }}</span></p>
+                <p>عضو اللجنة: <span>{{ $selectedReports[0]['committees_members'] ?? 'N/A' }}</span></p>
+                <p>رئيس اللجنة: <span>{{ $selectedReports[0]['committees_chairman'] ?? 'N/A' }}</span></p>
             </div>
 
             <div class="footer" style="text-align: center;">
