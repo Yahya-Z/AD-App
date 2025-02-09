@@ -28,11 +28,11 @@
                     <td>{{ $bidder->currency }}</td>
                     <td>{{ $bidder->amount }}</td>
                     <td>{{ $bidder->discount }}</td>
-                    <td>{{ $bidder->final_amount }}</td>
-                    <td>{{ $bidder->commercial_register ? '✔️' : '❌' }}</td>
-                    <td>{{ $bidder->tax_card ? '✔️' : '❌' }}</td>
-                    <td>{{ $bidder->zakat_card ? '✔️' : '❌' }}</td>
-                    <td>{{ $bidder->shop_license ? '✔️' : '❌' }}</td>
+                    <td>{{ $bidder->amount - $bidder->discount }}</td>
+                    <td>{{ $bidder->commercial_register }}</td>
+                    <td>{{ $bidder->tax_card }}</td>
+                    <td>{{ $bidder->zakat_card }}</td>
+                    <td>{{ $bidder->shop_license }}</td>
                     <td>{{ $bidder->notes }}</td>
                 </tr>
                 @endforeach
@@ -46,6 +46,9 @@
 
         <div class="mt-4">
             <a href="{{ route('reports.index') }}" class="btn btn-secondary">العودة إلى القائمة</a>
+        </div>
+        <div class="mt-4">
+            <a href="{{ route('bidders.create') }}" class="btn btn-secondary">إضافة متقدم اخر</a>
         </div>
     </div>
     

@@ -11,8 +11,10 @@ Route::get('/reports', [ReportController::class, 'index'])->name('reports.index'
 Route::get('/reports/create', [ReportController::class, 'create'])->name('reports.create');
 
 Route::post('/reports/store', [ReportController::class, 'store'])->name('reports.store');
-
 Route::get('/reports/{report}', [ReportController::class, 'show'])->name('reports.show');
+
+Route::get('/reports/add-bidder', [ReportController::class, 'addBidder'])->name('bidders.create');
+Route::post('/bidders', [ReportController::class, 'storeBidder'])->name('bidders.store');
 
 Route::post('/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
 Route::post('/reports/download', [ReportController::class, 'download'])->name('reports.download');

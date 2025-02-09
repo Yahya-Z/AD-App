@@ -21,6 +21,12 @@ class ReportController extends Controller
         return view('reports.create', compact('reports'));    
     }
 
+    public function addBidder()
+    {
+        $reports = Report::all();
+        return view('reports.addBidder', compact('reports'));
+    }
+
     // app/Http/Controllers/ReportController.php
     public function store(Request $request)
     {
@@ -78,6 +84,31 @@ class ReportController extends Controller
         }
     
         return redirect()->route('reports.index')->with('success', 'تم إضافة البيانات بنجاح');
+    }
+
+    public function storeBidder(Request $request)
+    {
+        // Validate the request
+        $validated = $request->validate([
+            'report_id' => 'required|exists:reports,id',
+            'name' => 'required|string|max:255',
+            'currency' => 'required|string|max:255',
+            'amount' => 'required|numeric',
+            'discount' => 'nullable|numeric',
+            'commercial_register' => 'nullable|string|max:255',
+            'tax_card' => 'nullable|string|max:255',
+            'zakat_card' => 'nullable|string|max:255',
+            'shop_license' => 'nullable|string|max:255',
+            'notes' => 'nullable|string',
+        ]);
+
+        // Find the report
+        $report = Report::findOrFail($validated['report_id']);
+
+        // Create the bidder
+        $report->bidders()->create($validated);
+
+        return redirect()->route('reports.index')->with('success', 'Bidder added successfully.');
     }
 
     public function show(Report $report)
