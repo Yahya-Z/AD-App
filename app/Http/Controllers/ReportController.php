@@ -17,7 +17,8 @@ class ReportController extends Controller
 
     public function create()
     {
-        return view('reports.create');
+        $reports = Report::all();
+        return view('reports.create', compact('reports'));    
     }
 
     // app/Http/Controllers/ReportController.php
@@ -25,43 +26,58 @@ class ReportController extends Controller
     {
         // Validate the request
         $validated = $request->validate([
-            'offer_number' => 'required|string',
-            'project' => 'required|string',
-            'item' => 'required|string',
-            'committees_members' => 'required|string',
-            'committees_chairman' => 'required|string',
-            'bidders.*.name' => 'required|string',
-            'bidders.*.currency' => 'required|string',
+            'report_id' => 'required|exists:reports,id',
+            'offer_number' => 'required|string|max:255',
+            'project' => 'required|string|max:255',
+            'item' => 'required|string|max:255',
+            'committees_members' => 'required|string|max:255',
+            'committees_chairman' => 'required|string|max:255',
+            'bidders.*.name' => 'required|string|max:255',
+            'bidders.*.currency' => 'required|string|max:255',
             'bidders.*.amount' => 'required|numeric',
             'bidders.*.discount' => 'nullable|numeric',
+            'bidders.*.commercial_register' => 'nullable|string|max:255',
+            'bidders.*.tax_card' => 'nullable|string|max:255',
+            'bidders.*.zakat_card' => 'nullable|string|max:255',
+            'bidders.*.shop_license' => 'nullable|string|max:255',
+            'bidders.*.notes' => 'nullable|string',
         ]);
     
-        // Create the report
-        $report = Report::create([
-            'offer_number' => $validated['offer_number'],
-            'project' => $validated['project'],
-            'item' => $validated['item'],
-            'committees_members' => $validated['committees_members'],
-            'committees_chairman' => $validated['committees_chairman'],
-        ]);
+        // Check if a report with the same offer_number and project exists
+        $report = Report::where('offer_number', $validated['offer_number'])
+            ->where('project', $validated['project'])
+            ->first();
     
-        // Create bidders
-        foreach ($request->bidders as $bidderData) {
-            $report->bidders()->create([
-                'name' => $bidderData['name'],
-                'currency' => $bidderData['currency'],
-                'amount' => $bidderData['amount'],
-                'discount' => $bidderData['discount'] ?? 0,
-                'final_amount' => $bidderData['amount'] - ($bidderData['discount'] ?? 0),
-                'commercial_register' => isset($bidderData['commercial_register']),
-                'tax_card' => isset($bidderData['tax_card']),
-                'zakat_card' => isset($bidderData['zakat_card']),
-                'shop_license' => isset($bidderData['shop_license']),
-                'notes' => $bidderData['notes'] ?? '',
+        // Create the report if it doesn't exist
+        if (!$report) {
+            $report = Report::create([
+                'offer_number' => $validated['offer_number'],
+                'project' => $validated['project'],
+                'item' => $validated['item'],
+                'committees_members' => $validated['committees_members'],
+                'committees_chairman' => $validated['committees_chairman'],
             ]);
         }
     
-        return redirect()->route('reports.index');
+        // Create bidders
+        if ($request->has('bidders')) {
+            foreach ($request->bidders as $bidderData) {
+                $report->bidders()->create([
+                    'name' => $bidderData['name'],
+                    'currency' => $bidderData['currency'],
+                    'amount' => $bidderData['amount'],
+                    'discount' => $bidderData['discount'] ?? 0,
+                    'final_amount' => $bidderData['amount'] - ($bidderData['discount'] ?? 0),
+                    'commercial_register' => isset($bidderData['commercial_register']),
+                    'tax_card' => isset($bidderData['tax_card']),
+                    'zakat_card' => isset($bidderData['zakat_card']),
+                    'shop_license' => isset($bidderData['shop_license']),
+                    'notes' => $bidderData['notes'] ?? '',
+                ]);
+            }
+        }
+    
+        return redirect()->route('reports.index')->with('success', 'تم إضافة البيانات بنجاح');
     }
 
     public function show(Report $report)
@@ -72,10 +88,14 @@ class ReportController extends Controller
     public function generate(Request $request)
     {
         // Log the request data
-        Log::info('Generate PDF Request:', $request->all());
-
+        \Log::info('Generate PDF Request:', $request->all());
+    
+        if (!$request->has('report_ids')) {
+            return redirect()->back()->with('error', 'No reports selected.');
+        }
+    
         $selectedReports = Report::whereIn('id', $request->report_ids)->with('bidders')->get();
-
+    
         // Check if reports are fetched
         if ($selectedReports->isEmpty()) {
             return redirect()->back()->with('error', 'No reports selected.');
@@ -89,10 +109,22 @@ class ReportController extends Controller
     
         return $pdf->stream('reports.pdf');
     }
-    
+
     public function download(Request $request)
     {
+        // Log the request data
+        \Log::info('Generate PDF Request:', $request->all());
+
+        if (!$request->has('report_ids')) {
+            return redirect()->back()->with('error', 'No reports selected.');
+        }
+
         $selectedReports = Report::whereIn('id', $request->report_ids)->with('bidders')->get();
+
+        // Check if reports are fetched
+        if ($selectedReports->isEmpty()) {
+            return redirect()->back()->with('error', 'No reports selected.');
+        }
     
         $pdf = PDF::loadView('pdf.pdf_layout', compact('selectedReports'))
                   ->setOption('defaultFont', 'IBMPlexSansArabic')

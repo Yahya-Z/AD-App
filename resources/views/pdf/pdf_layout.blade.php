@@ -3,9 +3,15 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{{ $selectedReports[0]['name'] ?? 'Default Title' }}</title>
+        <title>محضر فتح مظاريف عرض السعر</title>
 
         <style>
+
+        @font-face {
+            font-family: 'IBMPlexSansArabic';
+            src: url("{{ public_path('fonts/IBMPlexSansArabic-Regular.ttf') }}") format('truetype');
+        }
+
             /* General Styles */
         body {
             font-family: 'IBMPlexSansArabic', sans-serif;
@@ -70,9 +76,9 @@
 
             <div style="text-align: center;">
                 <h1>محضر فتح مظاريف عرض السعر رقم: 
-                <span>{{ $selectedReports[0]['offer_number'] ?? 'N/A' }}</span>
+                <span>{{ $selectedReports[0]->offer_number ?? 'N/A' }}</span>
                 </h1>
-                <p>الخاص بشراء وتوريد <span>{{ $selectedReports[0]['item'] ?? 'N/A' }}</span> ضمن مشروع <span>{{ $selectedReports[0]['project'] ?? 'N/A' }}</span></p>
+                <p>الخاص بشراء وتوريد <span>{{ $selectedReports[0]->item ?? 'N/A' }}</span> ضمن مشروع <span>{{ $selectedReports[0]->project ?? 'N/A' }}</span></p>
             </div>
 
             <table>
@@ -95,104 +101,27 @@
                 </tr>
                 </thead>
                 <tbody>
+                @foreach ($selectedReports[0]->bidders as $index => $bidder)
                 <tr>
-                    <td>1</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $bidder->name }}</td>
+                    <td>{{ $bidder->currency }}</td>
+                    <td>{{ $bidder->amount }}</td>
+                    <td>{{ $bidder->discount }}</td>
+                    <td>{{ $bidder->final_amount }}</td>
+                    <td>{{ $bidder->commercial_register }}</td>
+                    <td>{{ $bidder->tax_card }}</td>
+                    <td>{{ $bidder->zakat_card }}</td>
+                    <td>{{ $bidder->shop_license }}</td>
+                    <td>{{ $bidder->notes }}</td>
                 </tr>
-                <tr>
-                    <td>2</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                @endforeach
                 </tbody>
             </table>
 
             <div class="committee">
-                <p>عضو اللجنة: <span>{{ $selectedReports[0]['committees_members'] ?? 'N/A' }}</span></p>
-                <p>عضو اللجنة: <span>{{ $selectedReports[0]['committees_members'] ?? 'N/A' }}</span></p>
-                <p>رئيس اللجنة: <span>{{ $selectedReports[0]['committees_chairman'] ?? 'N/A' }}</span></p>
+                <p>أعضاء اللجنة: <span>{{ $selectedReports[0]->committees_members ?? 'N/A' }}</span></p>
+                <p>رئيس اللجنة: <span>{{ $selectedReports[0]->committees_chairman ?? 'N/A' }}</span></p>
             </div>
 
             <div class="footer" style="text-align: center;">
