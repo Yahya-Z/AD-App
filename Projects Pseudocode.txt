@@ -1,0 +1,121 @@
+Database Schema Design
+1.1 Create reports table with columns:
+- id (primary key)
+- offer_number (string)
+- project (string)
+- item (string)
+- committees_members (strings)
+- committees_chairman (string)
+- created_at (timestamp)
+- updated_at (timestamp)
+
+1.2 Create bidders table with columns:
+- id (primary key)
+- report_id (foreign key to reports)
+- name (string)
+- currency (string)
+- amount (decimal)
+- discount (decimal)
+- final_amount (decimal)
+- comercial_register (string)
+- tax_card (string)
+- zakat_card (string)
+- shop_license (string)
+- notes (string)
+- created_at (timestamp)
+- updated_at (timestamp)
+
+Report Creation Workflow
+2.1 When user submits "Create Report" form:
+a. Validate required fields (report_id, offer_number, project, item, committees_members, committees_chairman, bidders. * .name, bidders. * .currency, bidders. * .amount, bidders. * .discount, bidders. * .final_amount, bidders. * .commercial_register, bidders. * .tax_card, bidders. * .zakat_card, bidders. * .shop_license, bidders. * .notes)
+b. Create new Report model instance
+c. Store in reports table
+d. If bidders data exists in form submission:
+i. Create related Bidder models
+ii. Store in bidders table with foreign key
+
+Bidder Management
+3.1 When user clicks "عرض التفاصيل" (View Details):
+a. Query report with related bidders using eager loading
+b. Return view with RTL layout containing:
+i. Report metadata section
+ii. Responsive table of bidders (name, currency, amount, discount, final amount, commercial_register, tax_card, zakat_card, shop_license, notes)
+
+3.2 When user clicks "إضافة متقدم جديد" (Add New Bidder):
+a. Open modal form with bidder fields
+b. On submission:
+i. Validate bidder data
+ii. Create new Bidder model linked to existing report
+iii. Return updated bidder table partial view
+
+PDF Generation System
+4.1 When user clicks "عرض PDF" (View PDF):
+a. Open the HTML template file and making sure it have:
+i. RTL direction CSS
+ii. IPMplexsansarabic font integration
+iii. Dynamic bidder rows based on associated data
+b. Convert to PDF using Browsershot
+c. Open PDF in new browser tab
+
+4.2 When user clicks "تحميل PDF" (Download PDF):
+a. Use same HTML template file as 4.1.a
+b. Generate PDF with Browsershot
+c. Force file download with appropriate headers
+
+Dynamic Content Handling
+5.1 All bidder tables (web views and PDF) must:
+a. Automatically adjust row count based on database records
+b. Maintain consistent RTL formatting
+c. Display documents as clickable links if stored as files
+
+5.2 HTML templates must include:
+a. CSS for dynamic table row heights
+b. Font-face declaration for IPMplexsansarabic
+c. RTL text alignment and direction settings
+
+Localization Requirements
+6.1 Ensure all interfaces:
+a. Use Arabic as primary language
+b. Maintain RTL layout structure
+c. Format numbers and currency according to Arabic conventions
+d. Use Hijri dates alongside Gregorian dates
+
+Implementation Steps
+7.1 Set up Browsershot:
+a. Install npm package: npm install browserhot
+b. Configure Puppeteer settings
+c. Test PDF generation with Arabic characters
+
+7.2 Font Integration:
+a. Place IPMplexsansarabic.ttf in public/fonts directory
+b. Create CSS font-face declaration:
+@font-face {
+font-family: 'IPMplexsansarabic';
+src: url('/fonts/IPMplexsansarabic.ttf') format('truetype');
+font-display: swap;
+}
+
+7.3 Create Blade Components:
+a. show.blade.php (reusable RTL, dynamic table row component)
+b. pdf-layout.blade.php (PDF layout with header/footer)
+c. addbidder.blade.php (dynamic bidder input form)
+
+Validation Rules
+8.1 Report validation:
+a. report_id: required|exists:reports,id
+b. offer_number: required|string|max:255
+c. project: required|string|max:255
+d. item: required|string|max:255
+e. committees_members: required|string|max:255
+f. committees_chairman: required|string|max:255
+
+8.2 Bidder validation:
+a. bidders.*.name: required|string|max:255
+b. bidders.*.currency: required|string|max:255
+c. bidders.*.amount: required|numeric
+d. bidders.*.discount: nullable|numeric
+e. bidders.*.commercial_register: nullable|string|max:255
+f. bidders.*.tax_card: nullable|string|max:255
+g. bidders.*.zakat_card: nullable|string|max:255
+h. bidders.*.shop_license: nullable|string|max:255
+i. bidders.*.notes: nullable|string

@@ -19,10 +19,10 @@ return new class extends Migration
             $table->decimal('amount', 10, 2); // المبلغ المقدم
             $table->decimal('discount', 10, 2)->default(0); // التخفيض
             $table->decimal('final_amount', 10, 2); // المبلغ بعد التخفيض
-            $table->boolean('commercial_register')->default(false); // السجل التجاري
-            $table->boolean('tax_card')->default(false); // البطاقة الضريبية
-            $table->boolean('zakat_card')->default(false); // البطاقة الزكوية
-            $table->boolean('shop_license')->default(false); // ترخيص المحل
+            $table->string('commercial_register'); // السجل التجاري
+            $table->string('tax_card'); // البطاقة الضريبية
+            $table->string('zakat_card'); // البطاقة الزكوية
+            $table->string('shop_license'); // ترخيص المحل
             $table->text('notes')->nullable(); // ملاحظات
             $table->timestamps();
         });
@@ -30,7 +30,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('bidders');
     }

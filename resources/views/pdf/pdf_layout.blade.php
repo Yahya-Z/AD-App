@@ -8,7 +8,7 @@
         <style>
 
         @font-face {
-            font-family: 'IBMPlexSansArabic';
+            font-family: 'IBMPlexSansArabic'; direction: rtl; text-align: right;
             src: url("{{ public_path('fonts/IBMPlexSansArabic-Regular.ttf') }}") format('truetype');
         }
 
