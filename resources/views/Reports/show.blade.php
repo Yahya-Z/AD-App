@@ -19,6 +19,7 @@
                 <th>البطاقة الزكوية</th>
                 <th>ترخيص المحل</th>
                 <th>ملاحظات</th>
+                <th>إجراءات</th>
             </tr>
         </thead>
         <tbody>
@@ -35,6 +36,13 @@
                     <td>{{ $bidder->zakat_card }}</td>
                     <td>{{ $bidder->shop_license }}</td>
                     <td>{{ $bidder->notes }}</td>
+                    <td>
+                        <form action="{{ route('bidders.destroy', ['report' => $report->id, 'bidder' => $bidder->id]) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">حذف</button>
+                        </form>
+                    </td>
                 </tr>
                 @endforeach
         </tbody>
@@ -49,14 +57,6 @@
         <a href="{{ route('reports.index') }}" class="btn btn-secondary">العودة إلى القائمة</a>
     </div>
 
-
 </div>
-        <!-- <div class="mt-4">
-            <a href="{{ route('reports.index') }}" class="btn btn-secondary">العودة إلى القائمة</a>
-        </div>
-        <div class="mt-4">
-            <a href="{{ route('bidders.create') }}" class="btn btn-secondary">إضافة متقدم اخر</a>
-        </div>
-    </div> -->
     
 </x-layout>

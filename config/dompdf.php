@@ -178,7 +178,7 @@ return [
          *
          * @var string
          */
-        'default_font' => 'IBMPlexSansArabic',
+        'default_font' => 'NotoNaskhArabic-SemiBold',
         'direction' => 'rtl', // Set RTL globally
 
 

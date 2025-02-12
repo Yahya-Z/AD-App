@@ -5,17 +5,18 @@
         <div class="col-lg-8 col-md-10">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h2 class="card-title mb-4 text-center">Create Report</h2>
+                    <h2 class="card-title mb-4 text-center">إضافة عرض سعر للمشروع رقم {{ $report->offer_number }}</h2>
                     @if(session('success'))
                         <div class="alert alert-success">
                             {{ session('success') }}
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('bidders.store') }}">
+                    <form method="POST" action="{{ route('bidders.store', $report->id) }}">
                         @csrf
                         <input type="hidden" name="report_id" value="{{ $report->id }}">
 
+                        <!-- Single Bidder Fields -->
                         <div class="form-group">
                             <label for="name">اسم المتقدم:</label>
                             <input type="text" id="name" name="name" class="form-control" required>
@@ -61,7 +62,6 @@
                         <button type="button" class="btn btn-secondary mb-3" onclick="addBidder()">إضافة متقدم اخر</button>
                         <button type="submit" class="btn btn-primary">حفظ</button>
                     </form>
-
                     <script>
                         let bidderCount = 1;
 
@@ -112,9 +112,29 @@
                                     <label for="bidders_${bidderCount}_notes" class="form-label">ملاحظات:</label>
                                     <textarea class="form-control" id="bidders_${bidderCount}_notes" name="bidders[${bidderCount}][notes]"></textarea>
                                 </div>
+                                <button type="button" class="btn btn-danger" onclick="removeBidder(this)">إزالة المتقدم</button>
                             `;
                             document.getElementById('bidders').appendChild(newBidder);
                             bidderCount++;
+                        }
+
+                        function removeBidder(button) {
+                            button.parentElement.remove();
+                            bidderCount--;
+                            const bidders = document.querySelectorAll('.bidder');
+                            bidders.forEach((bidder, index) => {
+                                bidder.querySelector('h3').innerText = `المتقدم ${index + 1}`;
+                                bidder.querySelectorAll('input, select, textarea').forEach(input => {
+                                    const name = input.getAttribute('name');
+                                    const id = input.getAttribute('id');
+                                    if (name) {
+                                        input.setAttribute('name', name.replace(/\[\d+\]/, `[${index}]`));
+                                    }
+                                    if (id) {
+                                        input.setAttribute('id', id.replace(/_\d+_/, `_${index}_`));
+                                    }
+                                });
+                            });
                         }
 
                         function updatereportDetails() {

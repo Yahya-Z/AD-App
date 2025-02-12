@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('offer_number'); // رقم العرض
             $table->string('project'); // اسم المشروع
             $table->string('item'); // البند
-            $table->text('committees_members'); // JSON if storing multiple members
+            $table->string('committees_members'); // JSON if storing multiple members
             $table->string('committees_chairman'); // رئيس اللجنة
             $table->timestamps();
         });

@@ -17,10 +17,6 @@ class Report extends Model
         'committees_chairman',
     ];
 
-    protected $casts = [
-        'committees_members' => 'array', // Store as JSON
-    ];
-
     public function bidders()
     {
         return $this->hasMany(Bidder::class);
